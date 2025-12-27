@@ -139,10 +139,173 @@
             return <span ref={ref} className={className} {...props}></span>;
         };
 
+        // 頁面：聯絡我們
+        const ContactPage = ({ formData, setFormData, isSubmitting, setIsSubmitting }) => {
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setIsSubmitting(true);
+
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwR1jjsP9930b9qQSDPPjum5pFxmaegp9Fyz4m_Xw1sz2F9Lzw-VqorfW3_cpn4zaY/exec';
+
+                try {
+                    const formDataObj = new FormData();
+                    formDataObj.append('name', formData.name);
+                    formDataObj.append('phone', formData.phone);
+                    formDataObj.append('company', formData.company);
+                    formDataObj.append('email', formData.email);
+                    formDataObj.append('request', formData.request);
+
+                    await fetch(scriptURL, {
+                        method: 'POST',
+                        body: formDataObj,
+                        mode: 'no-cors'
+                    });
+
+                    alert('預約成功！我們將儘快與您聯繫。');
+                    setFormData({ name: '', phone: '', company: '', email: '', request: '' });
+                } catch (error) {
+                    console.error('Error!', error);
+                    alert('發生錯誤，請稍後再試。');
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            const handleChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.value
+                });
+            };
+
+            return (
+                <div className="pt-32 pb-24 bg-gradient-to-b from-slate-50 to-white min-h-screen">
+                    <div className="max-w-4xl mx-auto px-4 lg:px-8">
+                        <div className="relative">
+                            <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl opacity-10 blur-2xl"></div>
+                            <div className="relative bg-white p-12 rounded-3xl shadow-2xl border border-slate-200">
+                                <div className="text-center mb-12">
+                                    <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-blue-600 text-sm font-bold uppercase tracking-widest mb-6">
+                                        <Icon name="Send" className="w-4 h-4" />
+                                        <span>Contact Us</span>
+                                    </div>
+                                    <h3 className="text-4xl font-black text-slate-900 mb-4">專案需求諮詢</h3>
+                                    <p className="text-slate-600 text-lg">留下您的需求，我們將為您提供專業的自動化解決方案與技術顧問服務。</p>
+                                </div>
+                                <form className="space-y-6" onSubmit={handleSubmit}>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
+                                                <Icon name="User" className="w-4 h-4 mr-2 text-blue-600" />
+                                                姓名 *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={handleChange}
+                                                className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                                                placeholder="請輸入姓名"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
+                                                <Icon name="Phone" className="w-4 h-4 mr-2 text-blue-600" />
+                                                電話 *
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                                                placeholder="請輸入電話號碼"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
+                                            <Icon name="Building2" className="w-4 h-4 mr-2 text-blue-600" />
+                                            公司名稱
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="company"
+                                            value={formData.company}
+                                            onChange={handleChange}
+                                            className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                                            placeholder="您的任職公司"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
+                                            <Icon name="Mail" className="w-4 h-4 mr-2 text-blue-600" />
+                                            電子郵件 *
+                                        </label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
+                                            placeholder="email@example.com"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
+                                            <Icon name="FileText" className="w-4 h-4 mr-2 text-blue-600" />
+                                            需求描述 / 備註
+                                        </label>
+                                        <textarea
+                                            name="request"
+                                            value={formData.request}
+                                            onChange={handleChange}
+                                            className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition resize-none"
+                                            placeholder="請簡述您的需求或想演示的內容..."
+                                        ></textarea>
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black py-5 rounded-xl text-lg hover:shadow-xl hover:shadow-blue-500/50 transition transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <Icon name="Loader2" className="w-5 h-5 mr-2 animate-spin" />
+                                                傳送中...
+                                            </>
+                                        ) : (
+                                            <>
+                                                立即預約
+                                                <Icon name="Send" className="w-5 h-5 ml-2" />
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         const App = () => {
             const [currentPage, setCurrentPage] = useState('home');
             const [isMenuOpen, setIsMenuOpen] = useState(false);
             const [currentSlide, setCurrentSlide] = useState(0);
+
+            // 聯絡表單狀態 - 提升到 App 層級以保留資料
+            const [formData, setFormData] = useState({
+                name: '',
+                phone: '',
+                company: '',
+                email: '',
+                request: ''
+            });
+            const [isSubmitting, setIsSubmitting] = useState(false);
 
             // 頁面自動滾動到頂部
             useEffect(() => {
@@ -960,168 +1123,6 @@
                 </div>
             );
 
-            // 頁面：聯絡我們
-            const ContactPage = () => {
-                const [formData, setFormData] = useState({
-                    name: '',
-                    phone: '',
-                    company: '',
-                    email: '',
-                    request: ''
-                });
-                const [isSubmitting, setIsSubmitting] = useState(false);
-
-                const handleSubmit = async (e) => {
-                    e.preventDefault();
-                    setIsSubmitting(true);
-
-                    const scriptURL = 'https://script.google.com/macros/s/AKfycbwR1jjsP9930b9qQSDPPjum5pFxmaegp9Fyz4m_Xw1sz2F9Lzw-VqorfW3_cpn4zaY/exec';
-
-                    try {
-                        const formDataObj = new FormData();
-                        formDataObj.append('name', formData.name);
-                        formDataObj.append('phone', formData.phone);
-                        formDataObj.append('company', formData.company);
-                        formDataObj.append('email', formData.email);
-                        formDataObj.append('request', formData.request);
-
-                        await fetch(scriptURL, {
-                            method: 'POST',
-                            body: formDataObj,
-                            mode: 'no-cors'
-                        });
-
-                        alert('預約成功！我們將儘快與您聯繫。');
-                        setFormData({ name: '', phone: '', company: '', email: '', request: '' });
-                    } catch (error) {
-                        console.error('Error!', error);
-                        alert('發生錯誤，請稍後再試。');
-                    } finally {
-                        setIsSubmitting(false);
-                    }
-                };
-
-                const handleChange = (e) => {
-                    setFormData({
-                        ...formData,
-                        [e.target.name]: e.target.value
-                    });
-                };
-
-                return (
-                    <div className="pt-32 pb-24 bg-gradient-to-b from-slate-50 to-white min-h-screen">
-                        <div className="max-w-4xl mx-auto px-4 lg:px-8">
-                            <div className="relative">
-                                <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl opacity-10 blur-2xl"></div>
-                                <div className="relative bg-white p-12 rounded-3xl shadow-2xl border border-slate-200">
-                                    <div className="text-center mb-12">
-                                        <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-blue-600 text-sm font-bold uppercase tracking-widest mb-6">
-                                            <Icon name="Send" className="w-4 h-4" />
-                                            <span>Contact Us</span>
-                                        </div>
-                                        <h3 className="text-4xl font-black text-slate-900 mb-4">專案需求諮詢</h3>
-                                        <p className="text-slate-600 text-lg">留下您的需求，我們將為您提供專業的自動化解決方案與技術顧問服務。</p>
-                                    </div>
-                                    <form className="space-y-6" onSubmit={handleSubmit}>
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
-                                                    <Icon name="User" className="w-4 h-4 mr-2 text-blue-600" />
-                                                    姓名 *
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                    className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                                                    placeholder="請輸入姓名"
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
-                                                    <Icon name="Phone" className="w-4 h-4 mr-2 text-blue-600" />
-                                                    電話 *
-                                                </label>
-                                                <input
-                                                    type="tel"
-                                                    name="phone"
-                                                    value={formData.phone}
-                                                    onChange={handleChange}
-                                                    className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                                                    placeholder="請輸入電話號碼"
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
-                                                <Icon name="Building2" className="w-4 h-4 mr-2 text-blue-600" />
-                                                公司名稱
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="company"
-                                                value={formData.company}
-                                                onChange={handleChange}
-                                                className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                                                placeholder="您的任職公司"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
-                                                <Icon name="Mail" className="w-4 h-4 mr-2 text-blue-600" />
-                                                電子郵件 *
-                                            </label>
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                value={formData.email}
-                                                onChange={handleChange}
-                                                className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition"
-                                                placeholder="email@example.com"
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center">
-                                                <Icon name="FileText" className="w-4 h-4 mr-2 text-blue-600" />
-                                                需求描述 / 備註
-                                            </label>
-                                            <textarea
-                                                name="request"
-                                                value={formData.request}
-                                                onChange={handleChange}
-                                                className="w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition resize-none"
-                                                placeholder="請簡述您的需求或想演示的內容..."
-                                            ></textarea>
-                                        </div>
-                                        <button
-                                            type="submit"
-                                            disabled={isSubmitting}
-                                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black py-5 rounded-xl text-lg hover:shadow-xl hover:shadow-blue-500/50 transition transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                                        >
-                                            {isSubmitting ? (
-                                                <>
-                                                    <Icon name="Loader2" className="w-5 h-5 mr-2 animate-spin" />
-                                                    傳送中...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    立即預約
-                                                    <Icon name="Send" className="w-5 h-5 ml-2" />
-                                                </>
-                                            )}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
             return (
                 <div className="min-h-screen">
                     <Navbar />
@@ -1130,7 +1131,7 @@
                     {currentPage === 'capabilities' && <HomePage />}
                     {currentPage === 'solutions' && <SolutionsPage />}
                     {currentPage === 'technology' && <TechnologyPage />}
-                    {currentPage === 'contact' && <ContactPage />}
+                    {currentPage === 'contact' && <ContactPage formData={formData} setFormData={setFormData} isSubmitting={isSubmitting} setIsSubmitting={setIsSubmitting} />}
 
                     {/* Footer - 改進版 */}
                     <footer className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-slate-300 py-20 px-4 relative overflow-hidden">
